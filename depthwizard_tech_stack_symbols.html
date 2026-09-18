@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DepthWizard - Technology Stack Symbols & Architecture Index</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm 10mm 10mm 10mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .page {
+      page-break-after: always;
+      position: relative;
+      min-height: 277mm;
+      padding: 8mm 6mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .page:last-child {
+      page-break-after: avoid;
+    }
+    
+    /* Header */
+    .header {
+      border-bottom: 2px solid #334155;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-badge {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+    .header-title h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #60a5fa, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+    .header-title p {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .header-right {
+      text-align: right;
+    }
+    .sih-badge {
+      display: inline-block;
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid #f97316;
+      color: #fb923c;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .meta-text {
+      font-size: 9.5px;
+      color: #64748b;
+    }
+
+    /* Section Styles */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      border-left: 3px solid #38bdf8;
+      padding-left: 8px;
+    }
+
+    /* Grid of Tech Cards */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .tech-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .tech-icon {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px;
+    }
+    .tech-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .tech-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .tech-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3px;
+    }
+    .tech-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+    .tech-version {
+      font-size: 9px;
+      font-weight: 600;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .tech-role {
+      font-size: 10.5px;
+      color: #cbd5e1;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+    .tech-details {
+      font-size: 9px;
+      color: #94a3b8;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid #334155;
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1 ==================== -->
+  <div class="page">
+    <div>
+      <!-- Header -->
+      <div class="header">
+        <div class="header-left">
+          <div class="logo-badge">🧙‍♂️</div>
+          <div class="header-title">
+            <h1>DepthWizard — Technology Stack Symbols</h1>
+            <p>Monocular 2D Aerial/Satellite to 3D Digital Elevation Engine</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="sih-badge">SIH 2026 • PS-26175</div>
+          <div class="meta-text">Official Architectural Symbol Index • Page 1 of 2</div>
+        </div>
+      </div>
+
+      <!-- SECTION 1: ML & COMPUTER VISION -->
+      <div class="section-title">
+        <span>Part 1: Artificial Intelligence, ML & Computer Vision</span>
+      </div>
+
+      <div class="tech-grid">
+        <!-- Python -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <defs>
+                <linearGradient id="py-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#387eb8"/>
+                  <stop offset="100%" stop-color="#366994"/>
+                </linearGradient>
+                <linearGradient id="py-yellow" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ffe873"/>
+                  <stop offset="100%" stop-color="#ffd43b"/>
+                </linearGradient>
+              </defs>
+              <path fill="url(#py-blue)" d="M63.3 3.1c-15.5 0-24.5 6.7-24.5 15.6v11.7h25.1v3.9H25.3C11.3 34.3 0 45.4 0 59.8c0 14.8 12.3 24.3 26.6 24.3h8.3v-11.7c0-9.2 8.3-16.8 17.5-16.8h25.1c7.7 0 14-6.3 14-14V18.7c0-9.2-9.6-15.6-28.2-15.6zm-13.8 8.1c2.6 0 4.7 2.1 4.7 4.7s-2.1 4.7-4.7 4.7-4.7-2.1-4.7-4.7 2.1-4.7 4.7-4.7z"/>
+              <path fill="url(#py-yellow)" d="M64.7 124.9c15.5 0 24.5-6.7 24.5-15.6V97.6H64.1v-3.9h38.6c14 0 25.3-11.1 25.3-25.5 0-14.8-12.3-24.3-26.6-24.3h-8.3v11.7c0 9.2-8.3 16.8-17.5 16.8H50.5c-7.7 0-14 6.3-14 14v22.9c0 9.2 9.6 15.6 28.2 15.6zm13.8-8.1c-2.6 0-4.7-2.1-4.7-4.7s2.1-4.7 4.7-4.7 4.7 2.1 4.7 4.7-2.1 4.7-4.7 4.7z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">Python</span>
+              <span class="tech-version">v3.10+</span>
+            </div>
+            <div class="tech-role">Core backend programming language powering tensor math, scientific routines, and async services.</div>
+            <div class="tech-details">Runtime: CPython 3.10+ • Type Annotations</div>
+          </div>
+        </div>
+
+        <!-- PyTorch -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <path fill="#EE4C2C" d="M64 4a60 60 0 0 0-42.4 17.6c-2.4 2.4-2.4 6.2 0 8.6 2.4 2.4 6.2 2.4 8.6 0A47.8 47.8 0 0 1 64 16.3c26.4 0 47.7 21.3 47.7 47.7 0 26.4-21.3 47.7-47.7 47.7-26.4 0-47.7-21.3-47.7-47.7 0-9.8 3-19.3 8.7-27.2l8.3 8.3a6.1 6.1 0 0 0 8.6 0 6.1 6.1 0 0 0 0-8.6L24.8 19.4c-2.4-2.4-6.2-2.4-8.6 0A59.7 59.7 0 0 0 4 64c0 33.1 26.9 60 60 60s60-26.9 60-60S97.1 4 64 4z"/>
+              <circle cx="88" cy="28" r="8" fill="#EE4C2C"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">PyTorch</span>
+              <span class="tech-version">v2.0+</span>
+            </div>
+            <div class="tech-role">Deep learning runtime powering forward inference for monocular relative depth estimation models.</div>
+            <div class="tech-details">torch, torch.hub, CUDA & CPU execution</div>
+          </div>
+        </div>
+
+        <!-- OpenCV -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <path fill="#EE2C2C" d="M64 8a28 28 0 1 0 0 56A28 28 0 1 0 64 8zm0 16a12 12 0 1 1 0 24 12 12 0 1 1 0-24z"/>
+              <path fill="#2CEE2C" d="M96 64a28 28 0 1 0 0 56 28 28 0 1 0 0-56zm0 16a12 12 0 1 1 0 24 12 12 0 1 1 0-24z"/>
+              <path fill="#2C2CEE" d="M32 64a28 28 0 1 0 0 56 28 28 0 1 0 0-56zm0 16a12 12 0 1 1 0 24 12 12 0 1 1 0-24z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">OpenCV</span>
+              <span class="tech-version">v4.10</span>
+            </div>
+            <div class="tech-role">Computer vision processing: CLAHE enhancement, Canny edges, bilateral filtering & morphological segmentation.</div>
+            <div class="tech-details">opencv-python-headless • cv2 algorithms</div>
+          </div>
+        </div>
+
+        <!-- Intel MiDaS / DPT -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="24" fill="#0068B5"/>
+              <path fill="#FFFFFF" d="M30 40h16v48H30zm22 0h16v48H52zm22 0h16v48H74zm22 0h16v48H96z" opacity="0.15"/>
+              <circle cx="42" cy="48" r="8" fill="#FFFFFF"/>
+              <circle cx="86" cy="48" r="8" fill="#FFFFFF"/>
+              <circle cx="64" cy="80" r="10" fill="#00C7FD"/>
+              <path d="M42 48 L64 80 L86 48" stroke="#FFFFFF" stroke-width="4" fill="none"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">Intel MiDaS / DPT</span>
+              <span class="tech-version">v2.1 / Small</span>
+            </div>
+            <div class="tech-role">Vision Transformer and convolutional relative depth estimator trained on 10+ diverse depth datasets.</div>
+            <div class="tech-details">Scale-and-shift invariant loss disparity</div>
+          </div>
+        </div>
+
+        <!-- NumPy -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="16" fill="#013243"/>
+              <path fill="#4BA0C6" d="M64 16 L108 40 L108 88 L64 112 L20 88 L20 40 Z"/>
+              <path fill="#013243" d="M64 22 L102 43 L102 85 L64 106 L26 85 L26 43 Z"/>
+              <path fill="#FFFFFF" d="M40 45 h10 l24 30 V45 h10 v38 H74 L50 53 v30 H40 Z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">NumPy</span>
+              <span class="tech-version">v1.26.4</span>
+            </div>
+            <div class="tech-role">N-dimensional array engine for depth matrix manipulations, Cartesian 3D coordinates, and meshgrid.</div>
+            <div class="tech-details">Vectorized linear algebra • Float32 tensors</div>
+          </div>
+        </div>
+
+        <!-- SciPy -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="16" fill="#00549F"/>
+              <path fill="#8BB8E8" d="M64 24c-22.1 0-40 17.9-40 40s17.9 40 40 40 40-17.9 40-40-17.9-40-40-40zm0 68c-15.5 0-28-12.5-28-28s12.5-28 28-28 28 12.5 28 28-12.5 28-28 28z"/>
+              <path fill="#FFFFFF" d="M38 52c6-10 16-16 26-16 14 0 25 8 28 20-3 1-8 3-12 4-2-6-8-10-16-10-6 0-12 4-16 10l-10-8z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">SciPy</span>
+              <span class="tech-version">v1.14.1</span>
+            </div>
+            <div class="tech-role">Scientific algorithms for spatial coordinate transformations, filtering, and connected-component calculations.</div>
+            <div class="tech-details">scipy.ndimage • scipy.spatial</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: BACKEND & DATABASE -->
+      <div class="section-title">
+        <span>Part 2: Backend Framework, API & Database</span>
+      </div>
+
+      <div class="tech-grid">
+        <!-- FastAPI -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <circle cx="64" cy="64" r="60" fill="#009688"/>
+              <path fill="#FFFFFF" d="M64 18 L38 68 L60 68 L52 110 L90 58 L68 58 Z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">FastAPI</span>
+              <span class="tech-version">v0.115.0</span>
+            </div>
+            <div class="tech-role">High-performance async REST API framework powering all 11 DepthWizard endpoints, lifespan, and CORS.</div>
+            <div class="tech-details">AsyncIO • OpenAPI Docs • Starlette core</div>
+          </div>
+        </div>
+
+        <!-- Uvicorn -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="16" fill="#2B2D42"/>
+              <path fill="#8A2BE2" d="M64 16 L104 96 L24 96 Z"/>
+              <path fill="#FF007F" d="M64 36 L92 92 L36 92 Z"/>
+              <circle cx="64" cy="72" r="8" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">Uvicorn</span>
+              <span class="tech-version">v0.30.0</span>
+            </div>
+            <div class="tech-role">Lightning-fast ASGI web server implementation powering high-throughput asynchronous request loops.</div>
+            <div class="tech-details">uvloop & httptools event loop engine</div>
+          </div>
+        </div>
+
+        <!-- SQLite & aiosqlite -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="16" fill="#003B57"/>
+              <path fill="#00A9E0" d="M24 38 C24 24 104 24 104 38 L104 90 C104 104 24 104 24 90 Z"/>
+              <ellipse cx="64" cy="38" rx="40" ry="14" fill="#00587A"/>
+              <ellipse cx="64" cy="38" rx="34" ry="10" fill="#FFFFFF"/>
+              <text x="64" y="74" fill="#FFFFFF" font-family="Arial, sans-serif" font-weight="bold" font-size="16" text-anchor="middle">SQLITE</text>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">SQLite / aiosqlite</span>
+              <span class="tech-version">v3.x / 0.20</span>
+            </div>
+            <div class="tech-role">Zero-configuration embedded relational SQL database with non-blocking async Python I/O driver.</div>
+            <div class="tech-details">depthwizard.db • ACID Transactional</div>
+          </div>
+        </div>
+
+        <!-- SQLAlchemy -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="16" fill="#1C1C1C"/>
+              <path fill="#D71F00" d="M64 16 C60 16 56 22 56 30 L56 50 L40 82 C34 94 44 112 64 112 C84 112 94 94 88 82 L72 50 L72 30 C72 22 68 16 64 16 Z"/>
+              <circle cx="64" cy="90" r="8" fill="#FFFFFF"/>
+              <circle cx="56" cy="76" r="4" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">SQLAlchemy</span>
+              <span class="tech-version">v2.0.35</span>
+            </div>
+            <div class="tech-role">Object-Relational Mapping (ORM) and declarative schema models for projects, jobs, and calibrations.</div>
+            <div class="tech-details">DeclarativeBase • AsyncSession queries</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span>DepthWizard Technology Stack Document</span>
+      <span>Smart India Hackathon (SIH) 2026 • Problem Statement: 26175</span>
+      <span>Generated for Architectural Review</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 2 ==================== -->
+  <div class="page">
+    <div>
+      <!-- Header -->
+      <div class="header">
+        <div class="header-left">
+          <div class="logo-badge">🧙‍♂️</div>
+          <div class="header-title">
+            <h1>DepthWizard — Technology Stack Symbols</h1>
+            <p>Monocular 2D Aerial/Satellite to 3D Digital Elevation Engine</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="sih-badge">SIH 2026 • PS-26175</div>
+          <div class="meta-text">Official Architectural Symbol Index • Page 2 of 2</div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: FRONTEND & 3D GRAPHICS -->
+      <div class="section-title">
+        <span>Part 3: Frontend UI, 3D WebGL & Interactive Graphics</span>
+      </div>
+
+      <div class="tech-grid">
+        <!-- React 18 -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <circle cx="64" cy="64" r="10" fill="#61DAFB"/>
+              <g stroke="#61DAFB" stroke-width="4.5" fill="none">
+                <ellipse rx="52" ry="20" cx="64" cy="64"/>
+                <ellipse rx="52" ry="20" cx="64" cy="64" transform="rotate(60 64 64)"/>
+                <ellipse rx="52" ry="20" cx="64" cy="64" transform="rotate(120 64 64)"/>
+              </g>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">React</span>
+              <span class="tech-version">v18.3</span>
+            </div>
+            <div class="tech-role">Declarative component UI architecture powering SPA views, live telemetry, and reactive state updates.</div>
+            <div class="tech-details">Virtual DOM • React Suspense & Hooks</div>
+          </div>
+        </div>
+
+        <!-- TypeScript -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="16" fill="#3178C6"/>
+              <path fill="#FFFFFF" d="M26 48 h36 v10 H49 v46 H37 V58 H26 Z"/>
+              <path fill="#FFFFFF" d="M72 88 c4 6 11 9 18 9 8 0 13-4 13-10 0-7-5-10-14-13-14-5-21-11-21-22 0-12 9-20 23-20 10 0 18 4 23 10 l-7 8 c-4-5-9-7-16-7-7 0-11 4-11 9 0 6 5 9 14 12 14 5 21 11 21 23 0 13-10 21-25 21-12 0-21-5-27-13 Z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">TypeScript</span>
+              <span class="tech-version">v5.5</span>
+            </div>
+            <div class="tech-role">Strictly typed frontend programming language preventing runtime errors across 3D vector coordinates.</div>
+            <div class="tech-details">Static Type System • Zero Type Errors</div>
+          </div>
+        </div>
+
+        <!-- Three.js -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="16" fill="#000000"/>
+              <path fill="#FFFFFF" d="M64 20 L108 96 L20 96 Z"/>
+              <path fill="#000000" d="M64 42 L94 92 L34 92 Z"/>
+              <path fill="#FFFFFF" d="M64 62 L82 92 L46 92 Z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">Three.js</span>
+              <span class="tech-version">r128+</span>
+            </div>
+            <div class="tech-role">Hardware-accelerated WebGL 3D graphics rendering engine for dense point clouds, meshes, and lighting.</div>
+            <div class="tech-details">THREE.BufferGeometry • Points & Mesh</div>
+          </div>
+        </div>
+
+        <!-- React Three Fiber / Drei -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="16" fill="#18181B"/>
+              <path fill="#61DAFB" d="M64 24 L100 45 L100 85 L64 106 L28 85 L28 45 Z"/>
+              <path fill="#18181B" d="M64 36 L88 50 L88 78 L64 92 L40 78 L40 50 Z"/>
+              <circle cx="64" cy="64" r="8" fill="#F43F5E"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">React Three Fiber</span>
+              <span class="tech-version">v8.17</span>
+            </div>
+            <div class="tech-role">Declarative Three.js scene graph integration with React lifecycle, OrbitControls, and useFrame animation loops.</div>
+            <div class="tech-details">@react-three/fiber • @react-three/drei</div>
+          </div>
+        </div>
+
+        <!-- Vite -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <defs>
+                <linearGradient id="vite-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#41D1FF"/>
+                  <stop offset="100%" stop-color="#BD34FE"/>
+                </linearGradient>
+              </defs>
+              <path fill="url(#vite-grad)" d="M117 21 L67 114 a4 4 0 0 1-7 0 L11 21 a4 4 0 0 1 5-5 l48 10 48-10 a4 4 0 0 1 5 5z"/>
+              <path fill="#FFD427" d="M72 16 L40 68 h18 l-10 36 38-56 H68 z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">Vite</span>
+              <span class="tech-version">v5.4</span>
+            </div>
+            <div class="tech-role">Next-generation frontend development server and Rollup production bundler with sub-second HMR.</div>
+            <div class="tech-details">Native ESM • Production bundle: 5.75s</div>
+          </div>
+        </div>
+
+        <!-- Tailwind CSS -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <path fill="#38BDF8" d="M34 40c7-14 18-18 33-12 10 4 16 11 23 18 11 11 22 17 38 12-7 14-18 18-33 12-10-4-16-11-23-18-11-11-22-17-38-12zm-34 32c7-14 18-18 33-12 10 4 16 11 23 18 11 11 22 17 38 12-7 14-18 18-33 12-10-4-16-11-23-18-11-11-22-17-38-12z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">Tailwind CSS</span>
+              <span class="tech-version">v3.4</span>
+            </div>
+            <div class="tech-role">Utility-first styling framework providing modern dark-mode aesthetics, responsive layouts, and animations.</div>
+            <div class="tech-details">JIT Compiler • PostCSS • Flexbox/Grid</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: STATE, DEVOPS & REPORTING -->
+      <div class="section-title">
+        <span>Part 4: State Management, DevOps & Reporting</span>
+      </div>
+
+      <div class="tech-grid">
+        <!-- Zustand -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="16" fill="#4B382A"/>
+              <ellipse cx="64" cy="74" rx="34" ry="28" fill="#D97706"/>
+              <circle cx="44" cy="46" r="14" fill="#D97706"/>
+              <circle cx="84" cy="46" r="14" fill="#D97706"/>
+              <circle cx="44" cy="46" r="8" fill="#FDE68A"/>
+              <circle cx="84" cy="46" r="8" fill="#FDE68A"/>
+              <ellipse cx="64" cy="80" rx="14" ry="10" fill="#78350F"/>
+              <circle cx="54" cy="68" r="4" fill="#1C1917"/>
+              <circle cx="74" cy="68" r="4" fill="#1C1917"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">Zustand</span>
+              <span class="tech-version">v4.5</span>
+            </div>
+            <div class="tech-role">Lightweight, boilerplate-free state management controlling active projects, 3D viewing modes, and camera timelines.</div>
+            <div class="tech-details">Zustand useStore • Unidirectional flow</div>
+          </div>
+        </div>
+
+        <!-- Docker -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <path fill="#2496ED" d="M124 58c-3-2-8-3-13-1-1-6-6-11-13-13-1 0-2 0-3 1-4-10-13-17-24-17-1 0-2 0-3 0-5-8-14-13-25-13-1 0-3 0-4 0C32 15 26 24 24 35c-7 2-13 6-17 12-4 6-5 13-4 20 1 12 10 22 22 23h72c14 0 26-10 28-24 1-3 0-6-1-8zM30 42h10v10H30zm14 0h10v10H44zm14 0h10v10H58zm14 0h10v10H72zm-42 14h10v10H30zm14 0h10v10H44zm14 0h10v10H58zm14 0h10v10H72zm14 0h10v10H86zm-42 14h10v10H44zm14 0h10v10H58zm14 0h10v10H72zm14 0h10v10H86z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">Docker / Compose</span>
+              <span class="tech-version">v26.0+</span>
+            </div>
+            <div class="tech-role">Containerization specification enabling multi-container orchestration for FastAPI backend and React frontend.</div>
+            <div class="tech-details">Dockerfile • docker-compose.yml</div>
+          </div>
+        </div>
+
+        <!-- Nginx -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <path fill="#009639" d="M64 8 L114 36 L114 92 L64 120 L14 92 L14 36 Z"/>
+              <path fill="#FFFFFF" d="M42 42 h10 l24 34 V42 h10 v44 H76 L52 52 v34 H42 Z"/>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">Nginx</span>
+              <span class="tech-version">Alpine</span>
+            </div>
+            <div class="tech-role">High-concurrency reverse proxy, static file server, and API gateway routing between `/api/v1` and SPA.</div>
+            <div class="tech-details">Reverse Proxy • Gzip & Static caching</div>
+          </div>
+        </div>
+
+        <!-- ReportLab -->
+        <div class="tech-card">
+          <div class="tech-icon">
+            <svg viewBox="0 0 128 128">
+              <rect width="128" height="128" rx="16" fill="#8B0000"/>
+              <path fill="#FFFFFF" d="M36 28 h36 l24 24 v48 H36 Z"/>
+              <path fill="#D32F2F" d="M72 28 v24 h24 Z"/>
+              <text x="64" y="86" fill="#FFFFFF" font-family="Arial, sans-serif" font-weight="bold" font-size="16" text-anchor="middle">PDF</text>
+            </svg>
+          </div>
+          <div class="tech-content">
+            <div class="tech-header">
+              <span class="tech-name">ReportLab</span>
+              <span class="tech-version">v4.2.2</span>
+            </div>
+            <div class="tech-role">Programmatic PDF document generator producing formal structural inspection reports and height audits.</div>
+            <div class="tech-details">PDF Export • Geospatial Summary</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span>DepthWizard Technology Stack Document</span>
+      <span>Smart India Hackathon (SIH) 2026 • Problem Statement: 26175</span>
+      <span>Generated for Architectural Review</span>
+    </div>
+  </div>
+
+</body>
+</html>
