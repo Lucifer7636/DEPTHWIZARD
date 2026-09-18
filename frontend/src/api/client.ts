@@ -10,14 +10,21 @@ export const getApiBaseUrl = (): string => {
     try {
       const customUrl = localStorage.getItem('depthwizard_api_url');
       if (customUrl && customUrl.trim()) {
-        return customUrl.trim().replace(/\/+$/, '');
+        return customUrl.trim().replace(/\/+$/, '').replace(/\/api\/v1\/?$/, '');
       }
     } catch {
       // localStorage may fail in restricted environments
     }
   }
   const envUrl = (import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || '').trim();
-  return envUrl ? envUrl.replace(/\/+$/, '') : '';
+  if (envUrl) {
+    return envUrl.replace(/\/+$/, '').replace(/\/api\/v1\/?$/, '');
+  }
+  // Default to the deployed Railway backend in production builds
+  if (import.meta.env.PROD) {
+    return 'https://depthwizard-production-23fa.up.railway.app';
+  }
+  return '';
 };
 
 export const setCustomApiBaseUrl = (url: string) => {
