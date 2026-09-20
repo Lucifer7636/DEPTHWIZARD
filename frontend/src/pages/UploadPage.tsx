@@ -44,6 +44,53 @@ const UploadPage: React.FC = () => {
     setError(null);
   };
 
+  const normalizeImageForUpload = (inputFile: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const ext = inputFile.name.split('.').pop()?.toLowerCase() || '';
+      const isStandard = (ext === 'jpg' || ext === 'jpeg' || ext === 'png') &&
+        !inputFile.type.includes('avif') &&
+        !inputFile.type.includes('webp') &&
+        !inputFile.type.includes('heic');
+
+      const img = new Image();
+      const url = URL.createObjectURL(inputFile);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        if (isStandard) {
+          resolve(inputFile);
+          return;
+        }
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(inputFile);
+            return;
+          }
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob((blob) => {
+            if (!blob) {
+              resolve(inputFile);
+              return;
+            }
+            const baseName = inputFile.name.replace(/\.[^/.]+$/, '');
+            const cleanFile = new File([blob], `${baseName}.png`, { type: 'image/png' });
+            resolve(cleanFile);
+          }, 'image/png');
+        } catch {
+          resolve(inputFile);
+        }
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(inputFile);
+      };
+      img.src = url;
+    });
+  };
+
   const handleStartProcessing = async () => {
     if (!file) return;
     setLoading(true);
@@ -55,7 +102,16 @@ const UploadPage: React.FC = () => {
       setProject(project);
       setIsDemo(false);
       setDemoData(null); // Explicit extra guard
-      const imageResult = await client.uploadImage(project.id, file);
+
+      // Normalize non-standard/AVIF image formats to standard PNG
+      let uploadFile = file;
+      try {
+        uploadFile = await normalizeImageForUpload(file);
+      } catch (normErr) {
+        console.warn('Image normalization skipped:', normErr);
+      }
+
+      const imageResult = await client.uploadImage(project.id, uploadFile);
       setOriginalImageUrl(getMediaUrl(`/data/uploads/${imageResult.filename}`));
       navigate(`/processing/${project.id}`, { state: { imageId: imageResult.id, filename: imageResult.filename } });
     } catch (err: any) {

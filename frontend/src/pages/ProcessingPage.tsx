@@ -144,7 +144,19 @@ const ProcessingPage: React.FC = () => {
 
         // 1. Pre-processing
         setCurrentStage(1);
-        await client.preprocess(projectId, imageId);
+        console.log("[DEPTHWIZARD] PREPROCESS START", {
+          projectId,
+          imageId
+        });
+        let preprocessRes;
+        try {
+          preprocessRes = await client.preprocess(projectId, imageId);
+          console.log("[DEPTHWIZARD] PREPROCESS RESPONSE", preprocessRes);
+        } catch (prepErr) {
+          console.error("[DEPTHWIZARD] PREPROCESS ERROR", prepErr);
+          throw prepErr;
+        }
+        console.log("[DEPTHWIZARD] PREPROCESS SUCCESS -> STAGE 3");
 
         // 2. Object Detection / Segmentation
         setCurrentStage(2);
