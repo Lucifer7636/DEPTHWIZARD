@@ -256,8 +256,29 @@ const ProcessingPage: React.FC = () => {
 
       {/* Error Alert */}
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center justify-between">
-          <span>{error}</span>
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          <div>
+            <p className="font-bold text-red-800">Processing Error at Stage {currentStage + 1} ({STAGES[currentStage]})</p>
+            <p className="text-red-700 mt-0.5">{error}</p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => {
+                setError(null);
+                executionStartedRef.current = false;
+                window.location.reload();
+              }}
+              className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold text-xs transition-colors"
+            >
+              Retry
+            </button>
+            <button
+              onClick={() => navigate('/upload')}
+              className="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 rounded-lg font-semibold text-xs transition-colors"
+            >
+              Back to Upload
+            </button>
+          </div>
         </div>
       )}
 

@@ -4,6 +4,7 @@ from app.database import get_db
 from app.models.models import ImageAsset
 from app.schemas.schemas import ImageResponse
 from app.services.image_service import validate_image, detect_image_type
+from app.utils.image_utils import load_image
 from app.config import settings
 import os
 import uuid
@@ -33,14 +34,14 @@ async def upload_image(
     async with aiofiles.open(filepath, 'wb') as out_file:
         await out_file.write(content)
     
-    # Extract image metadata
+    # Extract image metadata reliably using multi-codec loader
     try:
-        pil_img = PILImage.open(filepath)
-        width, height = pil_img.size
-        channels = len(pil_img.getbands())
+        img_arr = load_image(filepath)
+        height, width = img_arr.shape[:2]
+        channels = img_arr.shape[2] if len(img_arr.shape) == 3 else 1
         img_type = detect_image_type(filepath)
-        pil_img.close()
-    except Exception:
+    except Exception as e:
+        print(f"Notice: Image metadata extraction fallback: {e}")
         width, height, channels = 0, 0, 3
         img_type = "RGB"
     
