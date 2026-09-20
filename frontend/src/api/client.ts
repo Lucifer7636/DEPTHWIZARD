@@ -7,10 +7,20 @@ import axios, { InternalAxiosRequestConfig } from 'axios';
 // 3. Empty string '' (relative path for local Vite proxy or Vercel rewrites)
 export const getApiBaseUrl = (): string => {
   if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    const isVercelOrLocal = hostname.endsWith('vercel.app') || hostname === 'localhost' || hostname === '127.0.0.1';
+
     try {
       const customUrl = localStorage.getItem('depthwizard_api_url');
       if (customUrl && customUrl.trim()) {
-        return customUrl.trim().replace(/\/+$/, '').replace(/\/api\/v1\/?$/, '');
+        const clean = customUrl.trim().replace(/\/+$/, '').replace(/\/api\/v1\/?$/, '');
+        // If the stored URL is the default Railway backend, ignore it on Vercel/localhost
+        // so requests use the same-origin reverse-proxy rewrites instead of direct CORS calls
+        if (clean.includes('depthwizard-production-23fa.up.railway.app') && isVercelOrLocal) {
+          localStorage.removeItem('depthwizard_api_url');
+          return '';
+        }
+        return clean;
       }
     } catch {
       // localStorage may fail in restricted environments
@@ -18,8 +28,7 @@ export const getApiBaseUrl = (): string => {
 
     // On Vercel and local development, ALWAYS use same-origin relative URLs ('') so Vercel rewrites
     // and Vite dev proxies handle /api and /data routing without CORS errors, preflight delays, or ORB blocks.
-    const hostname = window.location.hostname;
-    if (hostname.endsWith('vercel.app') || hostname === 'localhost' || hostname === '127.0.0.1') {
+    if (isVercelOrLocal) {
       return '';
     }
   }
