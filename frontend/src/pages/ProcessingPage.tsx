@@ -64,6 +64,14 @@ const ProcessingPage: React.FC = () => {
 
   // Real processing pipeline for uploaded image
   useEffect(() => {
+    // Defensive: if we're on a real project route, clear any stale demo data
+    if (id && id !== 'demo' && !isDemo) {
+      if (demoData) {
+        useStore.getState().setDemoData(null);
+        return; // Will re-trigger this effect with demoData=null
+      }
+    }
+
     if (isDemo || demoData || id === 'demo' || !id) return;
     if (executionStartedRef.current) return;
     executionStartedRef.current = true;

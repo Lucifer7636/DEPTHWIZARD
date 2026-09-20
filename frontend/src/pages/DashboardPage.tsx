@@ -113,7 +113,7 @@ const DashboardPage: React.FC = () => {
                       </td>
                       <td className="py-3.5">
                         <button 
-                          onClick={() => navigate(`/reconstruction/demo`)} 
+                          onClick={() => navigate(p.id ? `/reconstruction/${p.id}` : `/reconstruction/demo`)} 
                           className="px-3 py-1.5 bg-slate-100 hover:bg-cyan-50 hover:text-cyan-700 text-slate-700 rounded-lg text-xs font-bold transition flex items-center gap-1"
                         >
                           View 3D <ArrowRight size={12} />

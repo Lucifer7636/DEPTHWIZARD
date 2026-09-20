@@ -55,5 +55,5 @@ async def export_csv(db: AsyncSession, project_id: int):
     writer.writerow(["Building ID", "Min Height", "Max Height", "Mean Height", "Area"])
     if data and data.get("height_stats") and data["height_stats"].get("buildings"):
         for b in data["height_stats"]["buildings"]:
-            writer.writerow([b.get("id"), b.get("min"), b.get("max"), b.get("mean"), b.get("area")])
+            writer.writerow([b.get("id"), b.get("min_height"), b.get("max_height"), b.get("mean_height"), b.get("area_pixels")])
     return output.getvalue()

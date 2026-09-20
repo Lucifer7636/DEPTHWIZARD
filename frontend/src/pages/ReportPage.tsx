@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { FileText, Download, BarChart3, Mountain, Cpu, Calendar, Image as ImageIcon } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { getMediaUrl } from '../api/client';
+import { client, getMediaUrl } from '../api/client';
 
 const ReportPage: React.FC = () => {
+  const { id } = useParams();
   const depthResult = useStore(state => state.depthResult);
   const heightData = useStore(state => state.heightData);
   const calibration = useStore(state => state.calibration);
@@ -12,6 +14,69 @@ const ReportPage: React.FC = () => {
   const isDemo = useStore(state => state.isDemo);
   const originalImageUrl = useStore(state => state.originalImageUrl);
   const depthImageUrl = useStore(state => state.depthImageUrl);
+  const setOriginalImageUrl = useStore(state => state.setOriginalImageUrl);
+  const setDepthImageUrl = useStore(state => state.setDepthImageUrl);
+  const setDepthResult = useStore(state => state.setDepthResult);
+  const setHeightData = useStore(state => state.setHeightData);
+  const setCalibration = useStore(state => state.setCalibration);
+  const setReconstructionInfo = useStore(state => state.setReconstructionInfo);
+  const setIsDemo = useStore(state => state.setIsDemo);
+
+  useEffect(() => {
+    if (!heightData || !depthResult) {
+      if (id && id !== 'demo') {
+        const projId = parseInt(id, 10);
+        if (!isNaN(projId)) {
+          Promise.all([
+            client.getReport(projId).catch(() => null),
+            client.getProjectImage(projId).catch(() => null)
+          ]).then(([reportRes, imgData]) => {
+            if (imgData) {
+              const baseName = imgData.filename.replace(/\.[^/.]+$/, '');
+              setOriginalImageUrl(getMediaUrl(`/data/uploads/${imgData.filename}`));
+              setDepthImageUrl(getMediaUrl(`/data/outputs/${baseName}_depth.png`));
+              setIsDemo(false);
+              if (reportRes?.report_data?.depth_stats) {
+                setDepthResult({
+                  depth_map_path: '',
+                  depth_image_url: getMediaUrl(`/data/outputs/${baseName}_depth.png`),
+                  min_depth: reportRes.report_data.depth_stats.min,
+                  max_depth: reportRes.report_data.depth_stats.max,
+                  mean_depth: reportRes.report_data.depth_stats.mean,
+                  inference_time: 0.1,
+                  model_used: reportRes.report_data.depth?.model || 'Depth Model',
+                  is_demo: false,
+                });
+              }
+              if (reportRes?.report_data?.height_stats) {
+                setHeightData({
+                  min_height: reportRes.report_data.height_stats.min_height,
+                  max_height: reportRes.report_data.height_stats.max_height,
+                  mean_height: reportRes.report_data.height_stats.mean_height,
+                  scale_factor: reportRes.report_data.calibration?.scale_factor || 50,
+                  num_buildings: reportRes.report_data.height_stats.buildings?.length || 0,
+                  buildings: reportRes.report_data.height_stats.buildings || [],
+                  confidence: 0.85,
+                  unit: 'meters (estimated)',
+                });
+              }
+              if (reportRes?.report_data?.calibration) {
+                setCalibration(reportRes.report_data.calibration);
+              }
+              if (reportRes?.report_data?.['3d']) {
+                setReconstructionInfo({
+                  point_cloud_path: `/data/outputs/${baseName}_pointcloud.json`,
+                  mesh_path: `/data/outputs/${baseName}_mesh.json`,
+                  num_points: reportRes.report_data['3d'].points || 0,
+                  num_faces: reportRes.report_data['3d'].faces || 0,
+                });
+              }
+            }
+          }).catch(console.error);
+        }
+      }
+    }
+  }, [id, heightData, depthResult]);
 
   const buildingChartData = heightData?.buildings?.map((b, i) => ({
     name: `Building ${b.id}`,

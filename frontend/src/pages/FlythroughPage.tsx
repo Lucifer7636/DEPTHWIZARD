@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import SceneViewer from '../components/three/SceneViewer';
 import ViewerControls from '../components/three/ViewerControls';
 import { useStore } from '../store/useStore';
@@ -7,6 +8,7 @@ import Button from '../components/ui/Button';
 import { client } from '../api/client';
 
 const FlythroughPage: React.FC = () => {
+  const { id } = useParams();
   const { 
     flythroughPlaying, 
     setFlythroughPlaying, 
@@ -29,9 +31,32 @@ const FlythroughPage: React.FC = () => {
   const [mode, setMode] = useState<'follow' | 'free'>('follow');
   const [exportNotice, setExportNotice] = useState<string | null>(null);
 
-  // Auto-load demo 3D model if directly visited
+  // Auto-load 3D model if directly visited or refreshed
   useEffect(() => {
     if (!pointCloudData && !reconstructionInfo) {
+      if (id && id !== 'demo') {
+        const projId = parseInt(id, 10);
+        if (!isNaN(projId)) {
+          client.getProjectImage(projId).then(imgData => {
+            if (imgData) {
+              const baseName = imgData.filename.replace(/\.[^/.]+$/, '');
+              setIsDemo(false);
+              const pcPath = `/data/outputs/${baseName}_pointcloud.json`;
+              const meshPath = `/data/outputs/${baseName}_mesh.json`;
+              setReconstructionInfo({
+                point_cloud_path: pcPath,
+                mesh_path: meshPath,
+                num_points: 0,
+                num_faces: 0
+              });
+              client.loadPointCloudData(pcPath).then(setPointCloudData).catch(console.error);
+              client.loadMeshData(meshPath).then(setMeshData).catch(console.error);
+            }
+          }).catch(console.error);
+          return;
+        }
+      }
+
       client.runDemo().then(result => {
         setIsDemo(true);
         setHeightData(result.heights);

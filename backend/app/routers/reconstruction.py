@@ -11,12 +11,17 @@ router = APIRouter(prefix="/reconstruct", tags=["reconstruction"])
 
 @router.post("/pointcloud", response_model=PointCloudData)
 async def reconstruct_pc(project_id: int = Form(...), depth_result_id: int = Form(...), db: AsyncSession = Depends(get_db)):
+    from fastapi import HTTPException
     res = await db.execute(select(DepthResult).filter(DepthResult.id == depth_result_id))
     depth = res.scalar_one_or_none()
+    if not depth or not os.path.exists(depth.depth_map_path):
+        raise HTTPException(status_code=404, detail="Depth result not found or depth map missing")
     
     res_img = await db.execute(select(ImageAsset).filter(ImageAsset.project_id == project_id).order_by(ImageAsset.id.desc()))
     img = res_img.scalars().first()
-    image_path = img.filepath if (img and os.path.exists(img.filepath)) else (depth.depth_map_path.replace("_depth.npy", ".png") if depth else "")
+    if not img or not os.path.exists(img.filepath):
+        raise HTTPException(status_code=404, detail="Original image asset not found for project")
+    image_path = img.filepath
     
     pc_path, num_points = generate_point_cloud(depth.depth_map_path, image_path)
     
@@ -35,16 +40,21 @@ async def reconstruct_pc(project_id: int = Form(...), depth_result_id: int = For
 
 @router.post("/mesh", response_model=MeshData)
 async def reconstruct_mesh(project_id: int = Form(...), depth_result_id: int = Form(...), db: AsyncSession = Depends(get_db)):
+    from fastapi import HTTPException
     res = await db.execute(select(DepthResult).filter(DepthResult.id == depth_result_id))
     depth = res.scalar_one_or_none()
+    if not depth or not os.path.exists(depth.depth_map_path):
+        raise HTTPException(status_code=404, detail="Depth result not found or depth map missing")
     
     res_img = await db.execute(select(ImageAsset).filter(ImageAsset.project_id == project_id).order_by(ImageAsset.id.desc()))
     img = res_img.scalars().first()
-    image_path = img.filepath if (img and os.path.exists(img.filepath)) else (depth.depth_map_path.replace("_depth.npy", ".png") if depth else "")
+    if not img or not os.path.exists(img.filepath):
+        raise HTTPException(status_code=404, detail="Original image asset not found for project")
+    image_path = img.filepath
     
     mesh_path, num_faces = generate_mesh(depth.depth_map_path, image_path)
     
-    res = await db.execute(select(Reconstruction).filter(Reconstruction.project_id == project_id))
+    res = await db.execute(select(Reconstruction).filter(Reconstruction.project_id == project_id).order_by(Reconstruction.id.desc()))
     rec = res.scalars().first()
     if rec:
         rec.mesh_path = mesh_path

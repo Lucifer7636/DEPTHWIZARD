@@ -77,8 +77,8 @@ async def run_demo(db: AsyncSession = Depends(get_db)):
     await db.commit()
     await db.refresh(depth_record)
 
-    # 4. Run segmentation
-    seg_path, seg_labels = segment_image(image_path)
+    # 4. Run segmentation (with depth features when available)
+    seg_path, seg_labels = segment_image(image_path, depth_npy_path=depth_npy)
     
     # 5. Calibration
     scale_factor = calibrate_default(min_d, max_d)

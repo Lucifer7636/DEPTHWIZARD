@@ -24,9 +24,52 @@ const DepthPage: React.FC = () => {
   const [sliderPos, setSliderPos] = useState(50);
   const [pointQuery, setPointQuery] = useState<{ x: number; y: number; depth: number; estHeight: number } | null>(null);
 
-  // Auto-load demo if directly visited without state
+  // Auto-load data if directly visited or refreshed without state
   useEffect(() => {
     if (!depthResult || !originalImageUrl) {
+      if (id && id !== 'demo') {
+        const projId = parseInt(id, 10);
+        if (!isNaN(projId)) {
+          Promise.all([
+            client.getReport(projId).catch(() => null),
+            client.getProjectImage(projId).catch(() => null)
+          ]).then(([reportRes, imgData]) => {
+            if (imgData) {
+              const baseName = imgData.filename.replace(/\.[^/.]+$/, '');
+              setOriginalImageUrl(getMediaUrl(`/data/uploads/${imgData.filename}`));
+              setDepthImageUrl(getMediaUrl(`/data/outputs/${baseName}_depth.png`));
+              setIsDemo(false);
+              if (reportRes?.report_data?.depth_stats) {
+                setDepthResult({
+                  depth_map_path: '',
+                  depth_image_url: getMediaUrl(`/data/outputs/${baseName}_depth.png`),
+                  min_depth: reportRes.report_data.depth_stats.min,
+                  max_depth: reportRes.report_data.depth_stats.max,
+                  mean_depth: reportRes.report_data.depth_stats.mean,
+                  inference_time: 0.1,
+                  model_used: reportRes.report_data.depth?.model || 'Depth Model',
+                  is_demo: false,
+                });
+              }
+              if (reportRes?.report_data?.height_stats) {
+                setHeightData({
+                  min_height: reportRes.report_data.height_stats.min_height,
+                  max_height: reportRes.report_data.height_stats.max_height,
+                  mean_height: reportRes.report_data.height_stats.mean_height,
+                  scale_factor: reportRes.report_data.calibration?.scale_factor || 50,
+                  num_buildings: reportRes.report_data.height_stats.buildings?.length || 0,
+                  buildings: reportRes.report_data.height_stats.buildings || [],
+                  confidence: 0.85,
+                  unit: 'meters (estimated)',
+                });
+              }
+              return;
+            }
+          }).catch(console.error);
+          return;
+        }
+      }
+
       client.runDemo().then(result => {
         setIsDemo(true);
         setOriginalImageUrl(result.image_url);
@@ -47,7 +90,7 @@ const DepthPage: React.FC = () => {
         setCameraPath(result.flythrough.path);
       }).catch(console.error);
     }
-  }, [depthResult, originalImageUrl]);
+  }, [depthResult, originalImageUrl, id]);
 
   const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();

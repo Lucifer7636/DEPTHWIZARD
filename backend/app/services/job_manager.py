@@ -51,7 +51,7 @@ class JobManager:
                 
                 from app.services.segmentation_service import segment_image
                 self.update_job(job_id, "running", 50, "segmentation", "Segmenting image")
-                seg_res = segment_image(image_path)
+                seg_res = segment_image(image_path, depth_npy_path=depth_res[0])
                 
                 from app.services.reconstruction_service import generate_point_cloud, generate_mesh
                 self.update_job(job_id, "running", 70, "reconstruction", "Generating 3D models")

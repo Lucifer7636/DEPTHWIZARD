@@ -29,10 +29,35 @@ const ReconstructionPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
 
-  // Auto-load demo data if empty on page load
+  // Auto-load 3D data if empty on page load or refresh
   useEffect(() => {
     if (!pointCloudData && !meshData && !reconstructionInfo) {
       setLoading(true);
+      if (id && id !== 'demo') {
+        const projId = parseInt(id, 10);
+        if (!isNaN(projId)) {
+          client.getProjectImage(projId).then(imgData => {
+            if (imgData) {
+              const baseName = imgData.filename.replace(/\.[^/.]+$/, '');
+              setIsDemo(false);
+              setOriginalImageUrl(getMediaUrl(`/data/uploads/${imgData.filename}`));
+              setDepthImageUrl(getMediaUrl(`/data/outputs/${baseName}_depth.png`));
+              const pcPath = `/data/outputs/${baseName}_pointcloud.json`;
+              const meshPath = `/data/outputs/${baseName}_mesh.json`;
+              setReconstructionInfo({
+                point_cloud_path: pcPath,
+                mesh_path: meshPath,
+                num_points: 0,
+                num_faces: 0
+              });
+              client.loadPointCloudData(pcPath).then(setPointCloudData).catch(console.error);
+              client.loadMeshData(meshPath).then(setMeshData).catch(console.error);
+            }
+          }).catch(console.error).finally(() => setLoading(false));
+          return;
+        }
+      }
+
       client.runDemo().then(result => {
         setIsDemo(true);
         setOriginalImageUrl(result.image_url);

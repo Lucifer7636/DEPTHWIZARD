@@ -49,9 +49,12 @@ const UploadPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
+      // Clear ALL previous data (demo results, stale project data) before real upload
+      useStore.getState().reset();
       const project = await client.createProject(file.name, 'User uploaded analysis');
       setProject(project);
       setIsDemo(false);
+      setDemoData(null); // Explicit extra guard
       const imageResult = await client.uploadImage(project.id, file);
       setOriginalImageUrl(getMediaUrl(`/data/uploads/${imageResult.filename}`));
       navigate(`/processing/${project.id}`, { state: { imageId: imageResult.id, filename: imageResult.filename } });
