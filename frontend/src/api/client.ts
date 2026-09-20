@@ -20,10 +20,8 @@ export const getApiBaseUrl = (): string => {
   if (envUrl) {
     return envUrl.replace(/\/+$/, '').replace(/\/api\/v1\/?$/, '');
   }
-  // Default to the deployed Railway backend in production builds
-  if (import.meta.env.PROD) {
-    return 'https://depthwizard-production-23fa.up.railway.app';
-  }
+  // Use relative path '' so Vercel rewrites (in production) or Vite proxy (in development)
+  // forward /api and /data seamlessly. This completely eliminates CORS errors and mixed-content blocks.
   return '';
 };
 
