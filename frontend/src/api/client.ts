@@ -159,11 +159,11 @@ export const client = {
 
   // Projects
   createProject: async (name: string, description?: string) => {
-    const { data } = await api.post('/projects/', { name, description });
+    const { data } = await api.post('/projects', { name, description });
     return data;
   },
   getProjects: async () => {
-    const { data } = await api.get('/projects/');
+    const { data } = await api.get('/projects');
     return data;
   },
   getProject: async (id: number) => {
@@ -176,7 +176,7 @@ export const client = {
     const formData = new FormData();
     formData.append('project_id', String(projectId));
     formData.append('file', file);
-    const { data } = await api.post('/upload/', formData);
+    const { data } = await api.post('/upload', formData);
     return data;
   },
   getProjectImage: async (projectId: number) => {
@@ -216,7 +216,7 @@ export const client = {
     camera_altitude?: number;
     fov?: number;
   }) => {
-    const { data } = await api.post('/calibrate/', {
+    const { data } = await api.post('/calibrate', {
       project_id: projectId,
       ...params
     });
@@ -278,7 +278,7 @@ export const client = {
 
   // Demo
   getDemo: async () => {
-    const { data } = await api.get('/demo/');
+    const { data } = await api.get('/demo');
     return {
       ...data,
       image_path: getMediaUrl(data.image_path),

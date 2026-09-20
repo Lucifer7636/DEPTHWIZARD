@@ -19,6 +19,7 @@ import json
 router = APIRouter(prefix="/demo", tags=["demo"])
 
 @router.get("/")
+@router.get("", include_in_schema=False)
 async def get_demo():
     """Get pre-generated demo data for immediate display."""
     data = get_demo_data()
@@ -32,6 +33,7 @@ async def get_demo():
     }
 
 @router.post("/run")
+@router.post("/run/", include_in_schema=False)
 async def run_demo(db: AsyncSession = Depends(get_db)):
     """Run complete demo pipeline end-to-end and persist relational data."""
     # 1. Create demo project
