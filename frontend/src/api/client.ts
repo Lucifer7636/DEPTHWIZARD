@@ -15,13 +15,18 @@ export const getApiBaseUrl = (): string => {
     } catch {
       // localStorage may fail in restricted environments
     }
+
+    // On Vercel and local development, ALWAYS use same-origin relative URLs ('') so Vercel rewrites
+    // and Vite dev proxies handle /api and /data routing without CORS errors, preflight delays, or ORB blocks.
+    const hostname = window.location.hostname;
+    if (hostname.endsWith('vercel.app') || hostname === 'localhost' || hostname === '127.0.0.1') {
+      return '';
+    }
   }
   const envUrl = (import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || '').trim();
   if (envUrl) {
     return envUrl.replace(/\/+$/, '').replace(/\/api\/v1\/?$/, '');
   }
-  // Use relative path '' so Vercel rewrites (in production) or Vite proxy (in development)
-  // forward /api and /data seamlessly. This completely eliminates CORS errors and mixed-content blocks.
   return '';
 };
 
