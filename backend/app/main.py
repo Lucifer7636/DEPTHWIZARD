@@ -41,6 +41,19 @@ app.add_middleware(
     expose_headers=["*"],
 )
 
+from fastapi.responses import JSONResponse
+from fastapi import Request
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    tb = traceback.format_exc()
+    print(f"[GLOBAL_ERROR] {request.method} {request.url.path}: {exc}\n{tb}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"{exc.__class__.__name__}: {str(exc)}"}
+    )
+
 app.mount("/data/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
 app.mount("/data/outputs", StaticFiles(directory=settings.OUTPUT_DIR), name="outputs")
 
