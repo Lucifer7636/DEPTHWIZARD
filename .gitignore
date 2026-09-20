@@ -35,6 +35,8 @@ wheels/
 temp_edge/
 edge_profile/
 data/validation_output/
+data/outputs/
+data/uploads/
 
 # Databases
 *.db
