@@ -20,9 +20,9 @@ async def preprocess(
     import os
     import asyncio
     import traceback
-    print("[PREPROCESS] REQUEST RECEIVED")
-    print("[PREPROCESS] image_id =", image_id)
-    print("[PREPROCESS] project_id =", project_id)
+    print("DW_STAGE2_BACKEND_RECEIVED")
+    print("image_id =", image_id)
+    print("project_id =", project_id)
     try:
         res = await db.execute(select(ImageAsset).filter(ImageAsset.id == image_id))
         img = res.scalar_one_or_none()
