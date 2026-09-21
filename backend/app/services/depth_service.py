@@ -182,32 +182,53 @@ def estimate_depth(image_path: str) -> tuple[str, float, float, float, float, st
 
     inference_time = time.time() - start
     
+    # Process depth with percentile normalization and edge-preserving bilateral filtering
+    from app.utils.depth_processing import clean_depth, normalize_depth
+    raw_depth = depth.copy()
+    norm_depth = normalize_depth(raw_depth)
+    processed_depth = clean_depth(raw_depth)
+    
     # Save depth map
     out_dir = settings.OUTPUT_DIR
+    os.makedirs(out_dir, exist_ok=True)
     base = os.path.basename(image_path).rsplit(".", 1)[0]
     
     out_npy = os.path.join(out_dir, f"{base}_depth.npy")
-    np.save(out_npy, depth)
+    np.save(out_npy, processed_depth)
     
-    # Save colored depth image for visualization
+    # Save standard outputs
     out_img_path = os.path.join(out_dir, f"{base}_depth.png")
     depth_colored = cv2.applyColorMap(
-        (depth * 255).astype(np.uint8), cv2.COLORMAP_TURBO
+        (processed_depth * 255).astype(np.uint8), cv2.COLORMAP_TURBO
     )
     cv2.imwrite(out_img_path, depth_colored)
     
-    # Save grayscale depth image
     out_gray_path = os.path.join(out_dir, f"{base}_depth_gray.png")
-    cv2.imwrite(out_gray_path, (depth * 255).astype(np.uint8))
+    cv2.imwrite(out_gray_path, (processed_depth * 255).astype(np.uint8))
     
-    min_d = float(np.min(depth))
-    max_d = float(np.max(depth))
-    mean_d = float(np.mean(depth))
-    std_d = float(np.std(depth))
+    # --- Step 11: Save Visual Diagnostics ---
+    try:
+        # 01_original.png
+        cv2.imwrite(os.path.join(out_dir, f"{base}_01_original.png"), cv2.cvtColor(img_for_log, cv2.COLOR_RGB2BGR))
+        # 02_raw_depth.png
+        cv2.imwrite(os.path.join(out_dir, f"{base}_02_raw_depth.png"), (np.clip(raw_depth, 0, 1) * 255).astype(np.uint8))
+        # 03_normalized_depth.png
+        cv2.imwrite(os.path.join(out_dir, f"{base}_03_normalized_depth.png"), (norm_depth * 255).astype(np.uint8))
+        # 04_processed_depth.png
+        cv2.imwrite(os.path.join(out_dir, f"{base}_04_processed_depth.png"), (processed_depth * 255).astype(np.uint8))
+        # 05_height_map.png
+        cv2.imwrite(os.path.join(out_dir, f"{base}_05_height_map.png"), depth_colored)
+    except Exception as diag_err:
+        logger.warning(f"Could not save visual diagnostic image: {diag_err}")
+    
+    min_d = float(np.min(processed_depth))
+    max_d = float(np.max(processed_depth))
+    mean_d = float(np.mean(processed_depth))
+    std_d = float(np.std(processed_depth))
     
     logger.info(f"  Model used: {model_used}")
     logger.info(f"  Fallback used: {fallback_used}")
-    logger.info(f"  Depth stats: min={min_d:.4f}, max={max_d:.4f}, mean={mean_d:.4f}, std={std_d:.4f}")
+    logger.info(f"  Processed depth stats: min={min_d:.4f}, max={max_d:.4f}, mean={mean_d:.4f}, std={std_d:.4f}")
     logger.info(f"  Inference time: {inference_time:.2f}s")
     logger.info(f"  Output: {out_npy}")
     logger.info(f"=== Depth Estimation Complete ===")

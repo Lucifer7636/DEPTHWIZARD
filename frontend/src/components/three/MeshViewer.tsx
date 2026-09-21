@@ -31,32 +31,30 @@ const MeshViewer: React.FC = () => {
     }
     const zRange = maxZ - minZ || 1;
 
-    for (let i = 0; i < count; i++) {
-      positions[i * 3] = (verts[i][0] || 0) * 16;
-      positions[i * 3 + 1] = ((verts[i][2] || 0) - minZ) * 4;
-      positions[i * 3 + 2] = (verts[i][1] || 0) * 16;
+    const hasColors = colors && colors.length === count;
 
-      const t = ((verts[i][2] || 0) - minZ) / zRange;
-      if (t < 0.2) {
-        colorArr[i * 3] = 0.05;
-        colorArr[i * 3 + 1] = 0.4;
-        colorArr[i * 3 + 2] = 0.95;
-      } else if (t < 0.4) {
-        colorArr[i * 3] = 0.0;
-        colorArr[i * 3 + 1] = 0.8;
-        colorArr[i * 3 + 2] = 0.8;
-      } else if (t < 0.6) {
-        colorArr[i * 3] = 0.1;
-        colorArr[i * 3 + 1] = 0.85;
-        colorArr[i * 3 + 2] = 0.3;
-      } else if (t < 0.8) {
-        colorArr[i * 3] = 0.95;
-        colorArr[i * 3 + 1] = 0.75;
-        colorArr[i * 3 + 2] = 0.05;
+    for (let i = 0; i < count; i++) {
+      // Direct orthographic mapping: X=East/West, Y=Elevation (Up), Z=North/South
+      positions[i * 3] = verts[i][0] || 0;
+      positions[i * 3 + 1] = verts[i][2] || 0;
+      positions[i * 3 + 2] = -(verts[i][1] || 0);
+
+      // Step 7: Default to true source satellite image RGB
+      if (hasColors && colors[i]) {
+        colorArr[i * 3] = colors[i][0];
+        colorArr[i * 3 + 1] = colors[i][1];
+        colorArr[i * 3 + 2] = colors[i][2];
       } else {
-        colorArr[i * 3] = 0.95;
-        colorArr[i * 3 + 1] = 0.2;
-        colorArr[i * 3 + 2] = 0.15;
+        const t = ((verts[i][2] || 0) - minZ) / zRange;
+        if (t < 0.25) {
+          colorArr[i * 3] = 0.1; colorArr[i * 3 + 1] = 0.5; colorArr[i * 3 + 2] = 0.9;
+        } else if (t < 0.5) {
+          colorArr[i * 3] = 0.2; colorArr[i * 3 + 1] = 0.8; colorArr[i * 3 + 2] = 0.4;
+        } else if (t < 0.75) {
+          colorArr[i * 3] = 0.9; colorArr[i * 3 + 1] = 0.7; colorArr[i * 3 + 2] = 0.1;
+        } else {
+          colorArr[i * 3] = 0.9; colorArr[i * 3 + 1] = 0.2; colorArr[i * 3 + 2] = 0.1;
+        }
       }
     }
 

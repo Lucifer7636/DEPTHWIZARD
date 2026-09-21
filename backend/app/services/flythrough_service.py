@@ -65,33 +65,23 @@ def generate_camera_path(num_points: int = 1000, duration: float = 30.0,
         h_high = max(extent_z * 2.5, cz + 1.0)
         h_low = max(extent_z * 0.8, cz * 0.5)
         
-        # Target is the scene center
-        target = [cx, cy, cz * 0.5]  # Look slightly below center
-        
-        logger.info(f"Scene-adaptive flythrough: center=[{cx:.2f},{cy:.2f},{cz:.2f}], "
-                     f"extent=[{extent_x:.2f},{extent_y:.2f},{extent_z:.2f}], "
-                     f"orbit_r={r:.2f}, h_high={h_high:.2f}")
-    else:
-        # Fallback to parametric scaling (for backwards compatibility / demo)
-        scale = max(0.5, min(num_points / 5000, 3.0))
-        r = orbit_radius * scale
-        h_high = altitude * scale * 2
-        h_low = altitude * scale * 0.5
-        cx, cy, cz = 0, 0, 0
-        target = [0, 0, 0]
-        logger.info(f"Parametric flythrough (no bbox): scale={scale:.2f}, r={r:.2f}")
-    
-    # Keyframe positions defining the flythrough (relative to scene center)
+    # Three.js coordinate system: X is horizontal, Y is Up (elevation), Z is horizontal depth
+    tcx = float(cx)
+    tcy = float(cz)   # Three.js Up
+    tcz = float(-cy)  # Three.js depth
+
+    target = [tcx, tcy * 0.5, tcz]
+
     keyframes = [
-        [cx, cy, cz + h_high * 1.5],                         # Start: high top view
-        [cx + r * 0.7, cy + r * 0.7, cz + h_high],          # Diagonal approach
-        [cx + r, cy, cz + h_low],                             # Low orbit position 1
-        [cx, cy - r, cz + h_low * 0.8],                       # Low orbit position 2
-        [cx - r * 0.5, cy - r * 0.5, cz + h_low],            # Building focus area
-        [cx - r, cy + r * 0.3, cz + h_high * 0.7],           # Rising wide view
-        [cx, cy + r, cz + h_high],                             # Wide city view
-        [cx + r * 0.3, cy + r * 0.3, cz + h_high * 1.2],     # Ascending
-        [cx, cy, cz + h_high * 1.5],                           # End: back to top view
+        [tcx, tcy + h_high * 1.5, tcz],                          # Start: high top view
+        [tcx + r * 0.7, tcy + h_high, tcz + r * 0.7],           # Diagonal approach
+        [tcx + r, tcy + h_low, tcz],                             # Low orbit position 1
+        [tcx, tcy + h_low * 0.8, tcz - r],                       # Low orbit position 2
+        [tcx - r * 0.5, tcy + h_low, tcz - r * 0.5],             # Building focus area
+        [tcx - r, tcy + h_high * 0.7, tcz + r * 0.3],            # Rising wide view
+        [tcx, tcy + h_high, tcz + r],                            # Wide city view
+        [tcx + r * 0.3, tcy + h_high * 1.2, tcz + r * 0.3],      # Ascending
+        [tcx, tcy + h_high * 1.5, tcz],                          # End: back to top view
     ]
     
     # Generate smooth path using Catmull-Rom splines
@@ -110,7 +100,7 @@ def generate_camera_path(num_points: int = 1000, duration: float = 30.0,
             path.append({
                 "position": [round(float(pt[0]), 4), round(float(pt[1]), 4), round(float(pt[2]), 4)],
                 "target": [round(float(target[0]), 4), round(float(target[1]), 4), round(float(target[2]), 4)],
-                "up": [0, 0, 1],
+                "up": [0, 1, 0],
                 "time": round(t, 3)
             })
     
