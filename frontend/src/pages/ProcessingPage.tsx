@@ -142,6 +142,13 @@ const ProcessingPage: React.FC = () => {
           setOriginalImageUrl(getMediaUrl(`/data/uploads/${filename}`));
         }
 
+        console.log("REAL_PIPELINE_START", {
+          projectId,
+          imageId,
+          isDemo,
+          demoData
+        });
+
         // 1. Pre-processing
         setCurrentStage(1);
         console.log("DW_STAGE2_REQUEST_START", {
