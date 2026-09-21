@@ -46,20 +46,10 @@ const UploadPage: React.FC = () => {
 
   const normalizeImageForUpload = (inputFile: File): Promise<File> => {
     return new Promise((resolve) => {
-      const ext = inputFile.name.split('.').pop()?.toLowerCase() || '';
-      const isStandard = (ext === 'jpg' || ext === 'jpeg' || ext === 'png') &&
-        !inputFile.type.includes('avif') &&
-        !inputFile.type.includes('webp') &&
-        !inputFile.type.includes('heic');
-
       const img = new Image();
       const url = URL.createObjectURL(inputFile);
       img.onload = () => {
         URL.revokeObjectURL(url);
-        if (isStandard) {
-          resolve(inputFile);
-          return;
-        }
         try {
           const canvas = document.createElement('canvas');
           canvas.width = img.naturalWidth;
